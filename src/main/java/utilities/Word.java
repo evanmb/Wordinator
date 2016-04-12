@@ -1,16 +1,31 @@
 package utilities;
 
-import org.parse4j.Parse;
+import org.parse4j.ParseObject;
 
+/**
+ * 
+ * @author Christian Klein
+ *
+ */
 public class Word {
 	private String word;
 	private String description;
 	private int rank;
 	
+	public Word(ParseObject po) {
+		fillFromParseObject(po);
+	}
+	
 	public Word(String givenWord, String givenDescription, int givenRank) {
-		this.word = givenWord;
-		this.description = givenDescription;
-		this.rank = givenRank;
+		this.word 			= givenWord;
+		this.description 	= givenDescription;
+		this.rank 			= givenRank;
+	}
+	
+	public void fillFromParseObject(ParseObject po) {
+		this.word 			= po.getString("Word");
+		this.description 	= po.getString("Description");
+		this.rank 			= po.getInt("Rank");
 	}
 	
 	public String getWord() {
