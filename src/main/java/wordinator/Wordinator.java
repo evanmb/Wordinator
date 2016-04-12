@@ -43,6 +43,25 @@ public class Wordinator {
 	
     public static void main(String[] args) {
 		init();
+		
+		//DEBUGGING
+		System.out.println("Easy Words:");
+		for (Word w : easyWords) {
+			System.out.println(w);
+		}
+		System.out.println();
+		
+		System.out.println("Medium Words:");
+		for (Word w : mediumWords) {
+			System.out.println(w);
+		}
+		System.out.println();
+		
+		System.out.println("Hard Words:");
+		for (Word w : hardWords) {
+			System.out.println(w);
+		}
+		System.out.println();
     }
     
     /**
@@ -88,9 +107,7 @@ public class Wordinator {
     	pq.whereEqualTo("Rank", rank);
 		
 		try {
-			for (int i = 0; i < pq.getLimit(); i++) {
-				ParseObject w = pq.find().get(i);
-				
+			for (ParseObject w : pq.find()) {
 				list.add(new Word(w));
 			}
 		}

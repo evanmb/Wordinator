@@ -41,4 +41,9 @@ public class Word {
 	public int getRank() {
 		return this.rank;
 	}
+	
+	@Override
+	public String toString() {
+		return word + " - Rank: " + rank + " - " + description;
+	}
 }

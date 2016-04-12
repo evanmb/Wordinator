@@ -40,6 +40,9 @@ public class Stage {
 		this.word 			= givenWord.getWord();
 		this.description 	= givenWord.getDescription();
 		this.difficulty 	= givenWord.getRank();
+		
+		letters = new ArrayList<Character>();
+		
 		pickLetters();
 	}
 	
@@ -50,8 +53,8 @@ public class Stage {
 	private void pickLetters() {
 		Random r = new Random();
 		
-		for (int i = 0; i < word.length(); i++) {
-			letters.add(word.charAt(i));
+		for (char c : word.toCharArray()) {
+			letters.add(c);
 		}
 
 		for (int i = 0; i < 5; i++) {
