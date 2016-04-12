@@ -1,12 +1,14 @@
 package wordinator;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.parse4j.Parse;
 import org.parse4j.ParseException;
 import org.parse4j.ParseObject;
 import org.parse4j.ParseQuery;
 
+import utilities.Stage;
 import utilities.Word;
 
 /**
@@ -15,32 +17,72 @@ import utilities.Word;
  *
  */
 public class Wordinator {
-	private static ArrayList<Word> easyWords;
-	private static ArrayList<Word> mediumWords;
-	private static ArrayList<Word> hardWords;
+	/**
+	 * The current difficulty that the user is playing.
+	 */
+	private static int currentDifficulty;
 	
-    public static void main( String[] args ) {
+	/**
+	 * The variable for deciding when to increase or decrease difficulties.
+	 * Starts at 0, Fails decrease and Perfects increase.
+	 * -3 indicates to go down, while +3 indicates to go up
+	 */
+	private static int change;
+	
+	/**
+	 * Three different queues to hold the words in each difficulty
+	 */
+	private static Queue<Word> easyWords;
+	private static Queue<Word> mediumWords;
+	private static Queue<Word> hardWords;
+	
+	/**
+	 * The currently active stage
+	 */
+	private static Stage currentStage;
+	
+    public static void main(String[] args) {
 		init();
     }
     
+    /**
+     * Initializes the game
+     */
 	private static void init() {
-		Parse.initialize("qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
-				"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
+		Parse.initialize(	"qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
+							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
-		easyWords = new ArrayList<Word>();
-		mediumWords = new ArrayList<Word>();
-		hardWords = new ArrayList<Word>();
+		currentDifficulty = 2;
+		change = 0;
+		
+		easyWords = new LinkedList<Word>();
+		mediumWords = new LinkedList<Word>();
+		hardWords = new LinkedList<Word>();
 		
 		getAllWords();
+		
+		Stage initialStage = new Stage(mediumWords.poll());
+		currentStage = initialStage;
 	}
 	
+	/**
+	 * Populates all of the word queues
+	 */
     private static void getAllWords() {
     	getSomeWords(easyWords, 1);
     	getSomeWords(mediumWords, 2);
     	getSomeWords(hardWords, 3);
     }
 
-    private static void getSomeWords(ArrayList<Word> list, int rank) {
+    /**
+     * Populates a single word queue
+     * 
+     * @param list
+     * 		The list to populate
+     * @param rank
+     * 		The rank to look for when populating
+     */
+    private static void getSomeWords(Queue<Word> list, int rank) {
     	ParseQuery<ParseObject> pq = new ParseQuery<ParseObject>("Word");
 		
     	pq.whereEqualTo("Rank", rank);
@@ -50,8 +92,6 @@ public class Wordinator {
 				ParseObject w = pq.find().get(i);
 				
 				list.add(new Word(w));
-				
-				System.out.println(w.getString("Word"));
 			}
 		}
 		catch (ParseException e) {

@@ -5,6 +5,8 @@ import org.parse4j.ParseObject;
 /**
  * 
  * @author Christian Klein
+ * 
+ * This may be an unneeded class, but it does make the data management easier.
  *
  */
 public class Word {
