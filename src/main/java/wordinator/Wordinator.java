@@ -45,19 +45,22 @@ public class Wordinator {
 		init();
 		
 		//DEBUGGING
-		System.out.println("Easy Words:");
+		System.out.println(currentStage.toString());
+		System.out.println();
+		
+		System.out.println("EASY WORDS:");
 		for (Word w : easyWords) {
 			System.out.println(w);
 		}
 		System.out.println();
 		
-		System.out.println("Medium Words:");
+		System.out.println("MEDIUM WORDS:");
 		for (Word w : mediumWords) {
 			System.out.println(w);
 		}
 		System.out.println();
 		
-		System.out.println("Hard Words:");
+		System.out.println("HARD WORDS:");
 		for (Word w : hardWords) {
 			System.out.println(w);
 		}
@@ -74,9 +77,9 @@ public class Wordinator {
 		currentDifficulty = 2;
 		change = 0;
 		
-		easyWords = new LinkedList<Word>();
+		easyWords 	= new LinkedList<Word>();
 		mediumWords = new LinkedList<Word>();
-		hardWords = new LinkedList<Word>();
+		hardWords 	= new LinkedList<Word>();
 		
 		getAllWords();
 		
@@ -114,5 +117,34 @@ public class Wordinator {
 		catch (ParseException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    private static Stage generateNextStage() {
+    	Stage nextStage;
+    	
+    	if (change <= -3) {
+    		if (currentDifficulty > 1) {
+    			currentDifficulty--;
+    			change = 0;
+    		}
+    	}
+    	else if (change >= 3) {
+    		if (currentDifficulty < 3) {
+    			currentDifficulty++;
+    			change = 0;
+    		}
+    	}
+    	
+    	if (currentDifficulty <= 1) {
+    		nextStage = new Stage(easyWords.poll());
+    	}
+    	else if (currentDifficulty == 2) {
+    		nextStage = new Stage(mediumWords.poll());
+    	}
+    	else {
+    		nextStage = new Stage(hardWords.poll());
+    	}
+    	
+    	return nextStage;
     }
 }

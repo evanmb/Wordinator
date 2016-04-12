@@ -10,7 +10,12 @@ import java.util.Random;
  */
 public class Stage {
 	/**
-	 * The word that the user has to guess
+	 * The word given to create the stage
+	 */
+	private Word wordData;
+	
+	/**
+	 * The string word that the user has to guess
 	 */
 	private String word;
 	
@@ -30,6 +35,8 @@ public class Stage {
 	 */
 	private ArrayList<Character> letters;
 	
+	private int attempts;
+	
 	/**
 	 * Creates a state from a given Word
 	 * 
@@ -37,11 +44,15 @@ public class Stage {
 	 * 		The word to create the stage from
 	 */
 	public Stage(Word givenWord) {
+		this.wordData = givenWord;
+		
 		this.word 			= givenWord.getWord();
 		this.description 	= givenWord.getDescription();
 		this.difficulty 	= givenWord.getRank();
 		
 		letters = new ArrayList<Character>();
+		
+		attempts = 0;
 		
 		pickLetters();
 	}
@@ -76,5 +87,10 @@ public class Stage {
 	
 	public ArrayList<Character> getLetters() {
 		return this.letters;
+	}
+	
+	@Override
+	public String toString() {
+		return "CURRENT STAGE:\nAttempts - " + attempts + "\n" + wordData.toString();
 	}
 }
