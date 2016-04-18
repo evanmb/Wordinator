@@ -239,9 +239,7 @@ public class Wordinator extends Application{
      * 
      * @return The next level
      */
-    private static Level generateNextStage() {
-    	Level nextStage;
-    	
+    private static Level generateNextLevel() {
     	if (difficultyChecker <= -3) {
     		if (currentDifficulty > 1) {
     			currentDifficulty--;
@@ -255,8 +253,22 @@ public class Wordinator extends Application{
     		}
     	}
     	
-    	nextStage = new Level(allWords.get(currentDifficulty - 1).poll());
+    	int count = 0;
+    	while (allWords.get(currentDifficulty - 1).size() < 1) {
+    		if (currentDifficulty < MAX_DIFFICULTY) {
+    			currentDifficulty++;
+    		}
+    		else {
+    			currentDifficulty = 1;
+    		}
+    		
+    		count++;
+    		
+    		if (count >= MAX_DIFFICULTY * 3) {
+    			return new Level(new Word("Default", "NO WORDS FOUND", 0));
+    		}
+    	}
     	
-    	return nextStage;
+    	return new Level(allWords.get(currentDifficulty - 1).poll());
     }
 }
