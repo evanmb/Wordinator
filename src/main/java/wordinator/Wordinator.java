@@ -145,12 +145,12 @@ public class Wordinator extends Application{
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
     	
+    	gameScene = new Scene(gamePane, 450, 450);
+    	
     	displayLevel(currentLevel);
     	
     	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox);
     	gamePane.getChildren().add(gameLayout);
-    	
-    	gameScene = new Scene(gamePane, 450, 450);
     	
     	//start scene
     	startBtn = new Button("Start Game");
@@ -158,9 +158,7 @@ public class Wordinator extends Application{
     	startBox.getChildren().add(startBtn);
     	
 	}
-	
-	//private static void setGameScene() {}
-	
+
 	/**
 	 * Puts scrambledBox buttons down to the playerBox
 	 * @param b
@@ -205,6 +203,9 @@ public class Wordinator extends Application{
 		}
 	}
 	
+	/**
+	 * Displays the given level on the game scene
+	 */
 	private static void displayLevel(Level levelToDisplay) {
 		scrambledBox.getChildren().clear();
 		playerBox.getChildren().clear();
@@ -232,6 +233,8 @@ public class Wordinator extends Application{
     		scrambledBox.getChildren().add(b);
     		
     		dTxt = new Text(currentLevel.getDescription());
+    		dTxt.setWrappingWidth(gameScene.getWidth() - 10);
+    		
         	dBox.getChildren().clear();
     		dBox.getChildren().add(dTxt);
     	}
