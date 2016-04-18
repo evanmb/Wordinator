@@ -16,6 +16,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -144,7 +145,71 @@ public class Wordinator extends Application{
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
     	
-    	//make each letter a button, and add to box
+    	displayLevel(currentLevel);
+    	
+    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox);
+    	gamePane.getChildren().add(gameLayout);
+    	
+    	gameScene = new Scene(gamePane, 450, 450);
+    	
+    	//start scene
+    	startBtn = new Button("Start Game");
+    	startBox = new VBox();
+    	startBox.getChildren().add(startBtn);
+    	
+	}
+	
+	//private static void setGameScene() {}
+	
+	/**
+	 * Puts scrambledBox buttons down to the playerBox
+	 * @param b
+	 */
+	private static void s2pBtnSwitch(Button b) {
+		if (playerBox.getChildren().size() < currentLevel.getWord().length()) {
+			scrambledBox.getChildren().remove(b);
+			playerBox.getChildren().add(b);
+			
+			if (playerBox.getChildren().size() == currentLevel.getWord().length()) {
+				checkAnswer();
+			}
+		}
+	}
+	
+	/**
+	 * Puts playerBox buttons to the scrambledBox
+	 * @param b
+	 */
+	private static void p2sBtnSwitch(Button b) {
+		playerBox.getChildren().remove(b);
+		scrambledBox.getChildren().add(b);
+	}
+	
+	/**
+	 * Checks if the user has guessed the word
+	 */
+	private static void checkAnswer() {
+		String attempt = "";
+		
+		for (Node n : playerBox.getChildren()) {
+			attempt += ((Button) n).getText();
+		}
+		
+		if (attempt.equals(currentLevel.getWord())) {
+			difficultyChecker++;
+			currentLevel = generateNextLevel();
+			displayLevel(currentLevel);
+		}
+		else {
+			difficultyChecker--;
+		}
+	}
+	
+	private static void displayLevel(Level levelToDisplay) {
+		scrambledBox.getChildren().clear();
+		playerBox.getChildren().clear();
+		
+		//make each letter a button, and add to box
     	for (Character c : currentLevel.getLetters()) {
     		String letter = c.toString();
     		
@@ -165,40 +230,11 @@ public class Wordinator extends Application{
     		});
     		
     		scrambledBox.getChildren().add(b);
+    		
+    		dTxt = new Text(currentLevel.getDescription());
+        	dBox.getChildren().clear();
+    		dBox.getChildren().add(dTxt);
     	}
-    	
-    	dTxt = new Text(currentLevel.getDescription());
-    	dBox.getChildren().add(dTxt);
-    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox);
-    	gamePane.getChildren().add(gameLayout);
-    	
-    	gameScene = new Scene(gamePane, 450, 450);
-    	
-    	//start scene
-    	startBtn = new Button("Start Game");
-    	startBox = new VBox();
-    	startBox.getChildren().add(startBtn);
-    	
-	}
-	
-	//private static void setGameScene() {}
-	
-	/**
-	 * Puts scrambledBox buttons down to the playerBox
-	 * @param b
-	 */
-	private static void s2pBtnSwitch(Button b) {
-		scrambledBox.getChildren().remove(b);
-		playerBox.getChildren().add(b);
-	}
-	
-	/**
-	 * Puts playerBox buttons to the scrambledBox
-	 * @param b
-	 */
-	private static void p2sBtnSwitch(Button b) {
-		playerBox.getChildren().remove(b);
-		scrambledBox.getChildren().add(b);
 	}
 	
 	/**
