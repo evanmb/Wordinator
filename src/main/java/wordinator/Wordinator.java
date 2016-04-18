@@ -20,8 +20,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utilities.Level;
@@ -38,6 +39,11 @@ public class Wordinator extends Application{
 	 * The maximum difficulty in the database
 	 */
 	private static final int MAX_DIFFICULTY = 3;
+	
+	/**
+	 * The width of the game's letter tiles
+	 */
+	private static final double TILE_WIDTH = 40;
 	
 	/**
 	 * The current difficulty that the user is playing.
@@ -71,7 +77,8 @@ public class Wordinator extends Application{
 	private Scene endScene;
 	private static BorderPane gamePane;
 	private static VBox startBox, gameLayout;
-	private static HBox scrambledBox, dBox, playerBox;
+	private static FlowPane scrambledBox, dBox;
+	private static HBox playerBox;
 	private static Button startBtn;
 	private static Text dTxt;
 	private Stage stage;
@@ -122,7 +129,7 @@ public class Wordinator extends Application{
 		Parse.initialize(	"qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
 							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
-		currentDifficulty = 2;
+		currentDifficulty = MAX_DIFFICULTY / 2 + 1;
 		difficultyChecker = 0;
 		
 		allWords = new ArrayList<Queue<Word>>();
@@ -133,10 +140,11 @@ public class Wordinator extends Application{
 		
 		//GUI
 		//Game Scene
-		scrambledBox = new HBox();
+		scrambledBox = new FlowPane();
 		scrambledBox.setPadding(new Insets(10));
+		scrambledBox.setMinWidth(TILE_WIDTH * 10);
 		
-    	dBox = new HBox(); 
+    	dBox = new FlowPane(); 
     	dBox.setPadding(new Insets(10));
     	
     	playerBox = new HBox();
@@ -203,6 +211,7 @@ public class Wordinator extends Application{
 		}
 	}
 	
+	
 	/**
 	 * Displays the given level on the game scene
 	 */
@@ -215,6 +224,7 @@ public class Wordinator extends Application{
     		String letter = c.toString();
     		
     		final Button b = new Button(letter);
+    		b.setMinWidth(TILE_WIDTH);
     		
     		b.setOnAction(new EventHandler<ActionEvent>(){
 				public void handle(ActionEvent e) {
@@ -240,6 +250,7 @@ public class Wordinator extends Application{
     	}
 	}
 	
+	
 	/**
 	 * Populates all of the word queues
 	 */
@@ -249,6 +260,7 @@ public class Wordinator extends Application{
     	}
     }
 
+    
     /**
      * Populates a single word queue
      */
@@ -272,6 +284,7 @@ public class Wordinator extends Application{
 		
 		return words;
     }
+    
     
     /**
      * Creates the next level
