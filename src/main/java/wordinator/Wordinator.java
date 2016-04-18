@@ -246,8 +246,8 @@ public class Wordinator extends Application{
     			difficultyChecker = 0;
     		}
     	}
-    	else if (difficultyChecker >= MAX_DIFFICULTY) {
-    		if (currentDifficulty < 3) {
+    	else if (difficultyChecker >= 3) {
+    		if (currentDifficulty < MAX_DIFFICULTY) {
     			currentDifficulty++;
     			difficultyChecker = 0;
     		}
