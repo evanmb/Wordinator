@@ -1,6 +1,7 @@
 package utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -71,6 +72,8 @@ public class Level {
 		for (int i = 0; i < 5; i++) {
 			letters.add((char) (r.nextInt(26) + 'a'));
 		}
+		
+		Collections.shuffle(letters);
 	}
 	
 	public int getDifficulty() {

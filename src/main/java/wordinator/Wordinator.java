@@ -1,8 +1,10 @@
 package wordinator;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.parse4j.Parse;
@@ -32,6 +34,11 @@ import utilities.Word;
 @SuppressWarnings("restriction")
 public class Wordinator extends Application{
 	/**
+	 * The maximum difficulty in the database
+	 */
+	private static final int MAX_DIFFICULTY = 3;
+	
+	/**
 	 * The current difficulty that the user is playing.
 	 */
 	private static int currentDifficulty;
@@ -41,17 +48,15 @@ public class Wordinator extends Application{
 	 * Starts at 0, Fails decrease and Perfects increase.
 	 * -3 indicates to go down, while +3 indicates to go up
 	 */
-	private static int change;
+	private static int difficultyChecker;
 	
 	/**
-	 * Three different queues to hold the words in each difficulty
+	 * Master queue to hold all words
 	 */
-	private static Queue<Word> easyWords;
-	private static Queue<Word> mediumWords;
-	private static Queue<Word> hardWords;
+	private static ArrayList<Queue<Word>> allWords;
 	
 	/**
-	 * The currently active stage
+	 * The currently active level
 	 */
 	private static Level currentLevel;
 	
@@ -69,11 +74,7 @@ public class Wordinator extends Application{
 	private static Button startBtn;
 	private static Text dTxt;
 	private Stage stage;
-	
-	/**
-	 * @param args the command line arguments
-	 * @param args
-	 */
+
     public static void main(String[] args) {
     	launch(args); //launches GUI
     	
@@ -81,23 +82,13 @@ public class Wordinator extends Application{
 		System.out.println(currentLevel.toString());
 		System.out.println();
 		
-		System.out.println("EASY WORDS:");
-		for (Word w : easyWords) {
-			System.out.println(w);
+		for (Queue<Word> list : allWords) {
+			for (Word w : list) {
+				System.out.println(w.toString());
+			}
+			
+			System.out.println();
 		}
-		System.out.println();
-		
-		System.out.println("MEDIUM WORDS:");
-		for (Word w : mediumWords) {
-			System.out.println(w);
-		}
-		System.out.println();
-		
-		System.out.println("HARD WORDS:");
-		for (Word w : hardWords) {
-			System.out.println(w);
-		}
-		System.out.println();
     }
     
     /**
@@ -131,34 +122,34 @@ public class Wordinator extends Application{
 							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
 		currentDifficulty = 2;
-		change = 0;
+		difficultyChecker = 0;
 		
-		easyWords 	= new LinkedList<Word>();
-		mediumWords = new LinkedList<Word>();
-		hardWords 	= new LinkedList<Word>();
+		allWords = new ArrayList<Queue<Word>>();
 		
 		getAllWords();
 		
-		Level initialStage = new Level(mediumWords.poll());
-		currentLevel = initialStage;
+		currentLevel = new Level(allWords.get(currentDifficulty - 1).poll());
 		
 		//GUI
 		//Game Scene
 		scrambledBox = new HBox();
 		scrambledBox.setPadding(new Insets(10));
+		
     	dBox = new HBox(); 
     	dBox.setPadding(new Insets(10));
+    	
     	playerBox = new HBox();
     	playerBox.setPadding(new Insets(10));
+    	
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
     	
-    	Collections.shuffle(currentLevel.getLetters());
-    	
     	//make each letter a button, and add to box
-    	for(int i = 0; i < currentLevel.getLetters().size(); i++) {
+    	for (int i = 0; i < currentLevel.getLetters().size(); i++) {
     		String letter = currentLevel.getLetters().get(i).toString();
+    		
     		final Button b = new Button(letter);
+    		
     		b.setOnAction(new EventHandler<ActionEvent>(){
 				public void handle(ActionEvent e) {
 					if(b.getParent().equals(scrambledBox)) {
@@ -172,6 +163,7 @@ public class Wordinator extends Application{
 					}
 				}
     		});
+    		
     		scrambledBox.getChildren().add(b);
     	}
     	
@@ -181,6 +173,7 @@ public class Wordinator extends Application{
     	gamePane.getChildren().add(gameLayout);
     	
     	gameScene = new Scene(gamePane, 450, 450);
+    	
     	//start scene
     	startBtn = new Button("Start Game");
     	startBox = new VBox();
@@ -198,6 +191,7 @@ public class Wordinator extends Application{
 		scrambledBox.getChildren().remove(b);
 		playerBox.getChildren().add(b);
 	}
+	
 	/**
 	 * Puts playerBox buttons to the scrambledBox
 	 * @param b
@@ -211,63 +205,58 @@ public class Wordinator extends Application{
 	 * Populates all of the word queues
 	 */
     private static void getAllWords() {
-    	getSomeWords(easyWords, 1);
-    	getSomeWords(mediumWords, 2);
-    	getSomeWords(hardWords, 3);
+    	for (int i = 1; i <= MAX_DIFFICULTY; i++) {
+    		allWords.add(getWordsOfRank(i));
+    	}
     }
 
     /**
      * Populates a single word queue
-     * 
-     * @param list
-     * 		The list to populate
-     * @param rank
-     * 		The rank to look for when populating
      */
-    private static void getSomeWords(Queue<Word> list, int rank) {
+    private static Queue<Word> getWordsOfRank(int rank) {
+    	Queue<Word> words = new LinkedList<Word>();
+    	
     	ParseQuery<ParseObject> pq = new ParseQuery<ParseObject>("Word");
 		
     	pq.whereEqualTo("Rank", rank);
 		
 		try {
 			for (ParseObject w : pq.find()) {
-				list.add(new Word(w));
+				words.add(new Word(w));
 			}
 		}
 		catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
+		Collections.shuffle((List<?>) words);
+		
+		return words;
     }
     
+    /**
+     * Creates the next level
+     * 
+     * @return The next level
+     */
     private static Level generateNextStage() {
     	Level nextStage;
     	
-    	if (change <= -3) {
+    	if (difficultyChecker <= -3) {
     		if (currentDifficulty > 1) {
     			currentDifficulty--;
-    			change = 0;
+    			difficultyChecker = 0;
     		}
     	}
-    	else if (change >= 3) {
+    	else if (difficultyChecker >= MAX_DIFFICULTY) {
     		if (currentDifficulty < 3) {
     			currentDifficulty++;
-    			change = 0;
+    			difficultyChecker = 0;
     		}
     	}
     	
-    	if (currentDifficulty <= 1) {
-    		nextStage = new Level(easyWords.poll());
-    	}
-    	else if (currentDifficulty == 2) {
-    		nextStage = new Level(mediumWords.poll());
-    	}
-    	else {
-    		nextStage = new Level(hardWords.poll());
-    	}
+    	nextStage = new Level(allWords.get(currentDifficulty - 1).poll());
     	
     	return nextStage;
     }
-    
-    
-    
 }
