@@ -1,5 +1,7 @@
 package wordinator;
 
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,7 +10,18 @@ import org.parse4j.ParseException;
 import org.parse4j.ParseObject;
 import org.parse4j.ParseQuery;
 
-import utilities.Stage;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import utilities.Level;
 import utilities.Word;
 
 /**
@@ -16,7 +29,8 @@ import utilities.Word;
  * @author Victoria Rasavanh
  *
  */
-public class Wordinator {
+@SuppressWarnings("restriction")
+public class Wordinator extends Application{
 	/**
 	 * The current difficulty that the user is playing.
 	 */
@@ -39,13 +53,32 @@ public class Wordinator {
 	/**
 	 * The currently active stage
 	 */
-	private static Stage currentStage;
+	private static Level currentLevel;
 	
+	/**
+	 * GUI stuff
+	 */
+	private Scene startScene;
+
+	private static Scene gameScene;
+
+	private Scene endScene;
+	private static BorderPane gamePane;
+	private static VBox startBox, gameLayout;
+	private static HBox scrambledBox, dBox, playerBox;
+	private static Button startBtn;
+	private static Text dTxt;
+	private Stage stage;
+	
+	/**
+	 * @param args the command line arguments
+	 * @param args
+	 */
     public static void main(String[] args) {
-		init();
-		
+    	launch(args); //launches GUI
+    	
 		//DEBUGGING
-		System.out.println(currentStage.toString());
+		System.out.println(currentLevel.toString());
 		System.out.println();
 		
 		System.out.println("EASY WORDS:");
@@ -68,9 +101,32 @@ public class Wordinator {
     }
     
     /**
+     * The GUI
+     */
+    public void start(Stage primaryStage) {
+    	setUp();
+    	stage = primaryStage;
+    	
+    	//Button initialization
+    	startBtn.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+            	stage.setScene(gameScene);
+            	stage.show();
+            } 	
+        });
+    	
+        startScene = new Scene(startBox, 400, 400);
+        
+        
+        primaryStage.setTitle("Wordinator"); //sets the name of the Window
+        primaryStage.setScene(startScene);
+        primaryStage.show();
+    }
+    
+    /**
      * Initializes the game
      */
-	private static void init() {
+	private static void setUp() {
 		Parse.initialize(	"qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
 							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
@@ -83,8 +139,72 @@ public class Wordinator {
 		
 		getAllWords();
 		
-		Stage initialStage = new Stage(mediumWords.poll());
-		currentStage = initialStage;
+		Level initialStage = new Level(mediumWords.poll());
+		currentLevel = initialStage;
+		
+		//GUI
+		//Game Scene
+		scrambledBox = new HBox();
+		scrambledBox.setPadding(new Insets(10));
+    	dBox = new HBox(); 
+    	dBox.setPadding(new Insets(10));
+    	playerBox = new HBox();
+    	playerBox.setPadding(new Insets(10));
+    	gameLayout = new VBox();
+    	gamePane = new BorderPane();
+    	
+    	Collections.shuffle(currentLevel.getLetters());
+    	
+    	//make each letter a button, and add to box
+    	for(int i = 0; i < currentLevel.getLetters().size(); i++) {
+    		String letter = currentLevel.getLetters().get(i).toString();
+    		final Button b = new Button(letter);
+    		b.setOnAction(new EventHandler<ActionEvent>(){
+				public void handle(ActionEvent e) {
+					if(b.getParent().equals(scrambledBox)) {
+						s2pBtnSwitch(b);
+					}
+					else if(b.getParent().equals(playerBox)) {
+						p2sBtnSwitch(b);
+					}
+					else {
+						System.out.println("Letter button error.");
+					}
+				}
+    		});
+    		scrambledBox.getChildren().add(b);
+    	}
+    	
+    	dTxt = new Text(currentLevel.getDescription());
+    	dBox.getChildren().add(dTxt);
+    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox);
+    	gamePane.getChildren().add(gameLayout);
+    	
+    	gameScene = new Scene(gamePane, 450, 450);
+    	//start scene
+    	startBtn = new Button("Start Game");
+    	startBox = new VBox();
+    	startBox.getChildren().add(startBtn);
+    	
+	}
+	
+	//private static void setGameScene() {}
+	
+	/**
+	 * Puts scrambledBox buttons down to the playerBox
+	 * @param b
+	 */
+	private static void s2pBtnSwitch(Button b) {
+		scrambledBox.getChildren().remove(b);
+		playerBox.getChildren().add(b);
+	}
+	/**
+	 * Puts playerBox buttons to the scrambledBox
+	 * @param b
+	 */
+	private static void p2sBtnSwitch(Button b) {
+		playerBox.getChildren().remove(b);
+		scrambledBox.getChildren().add(b);
 	}
 	
 	/**
@@ -119,8 +239,8 @@ public class Wordinator {
 		}
     }
     
-    private static Stage generateNextStage() {
-    	Stage nextStage;
+    private static Level generateNextStage() {
+    	Level nextStage;
     	
     	if (change <= -3) {
     		if (currentDifficulty > 1) {
@@ -136,15 +256,18 @@ public class Wordinator {
     	}
     	
     	if (currentDifficulty <= 1) {
-    		nextStage = new Stage(easyWords.poll());
+    		nextStage = new Level(easyWords.poll());
     	}
     	else if (currentDifficulty == 2) {
-    		nextStage = new Stage(mediumWords.poll());
+    		nextStage = new Level(mediumWords.poll());
     	}
     	else {
-    		nextStage = new Stage(hardWords.poll());
+    		nextStage = new Level(hardWords.poll());
     	}
     	
     	return nextStage;
     }
+    
+    
+    
 }

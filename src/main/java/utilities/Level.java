@@ -8,9 +8,9 @@ import java.util.Random;
  * @author Christian Klein
  *
  */
-public class Stage {
+public class Level {
 	/**
-	 * The word given to create the stage
+	 * The word given to create the level
 	 */
 	private Word wordData;
 	
@@ -25,7 +25,7 @@ public class Stage {
 	private String description;
 	
 	/**
-	 * The difficulty of this stage
+	 * The difficulty of this level
 	 */
 	private int difficulty;
 	
@@ -41,9 +41,9 @@ public class Stage {
 	 * Creates a state from a given Word
 	 * 
 	 * @param givenWord
-	 * 		The word to create the stage from
+	 * 		The word to create the level from
 	 */
-	public Stage(Word givenWord) {
+	public Level(Word givenWord) {
 		this.wordData = givenWord;
 		
 		this.word 			= givenWord.getWord();
