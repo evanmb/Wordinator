@@ -145,17 +145,17 @@ public class Wordinator extends Application{
     	gamePane = new BorderPane();
     	
     	//make each letter a button, and add to box
-    	for (int i = 0; i < currentLevel.getLetters().size(); i++) {
-    		String letter = currentLevel.getLetters().get(i).toString();
+    	for (Character c : currentLevel.getLetters()) {
+    		String letter = c.toString();
     		
     		final Button b = new Button(letter);
     		
     		b.setOnAction(new EventHandler<ActionEvent>(){
 				public void handle(ActionEvent e) {
-					if(b.getParent().equals(scrambledBox)) {
+					if (b.getParent().equals(scrambledBox)) {
 						s2pBtnSwitch(b);
 					}
-					else if(b.getParent().equals(playerBox)) {
+					else if (b.getParent().equals(playerBox)) {
 						p2sBtnSwitch(b);
 					}
 					else {
@@ -240,6 +240,7 @@ public class Wordinator extends Application{
      * @return The next level
      */
     private static Level generateNextLevel() {
+    	//Change difficulty based on performance
     	if (difficultyChecker <= -3) {
     		if (currentDifficulty > 1) {
     			currentDifficulty--;
@@ -253,6 +254,7 @@ public class Wordinator extends Application{
     		}
     	}
     	
+    	//Make sure the current difficulty list isn't empty
     	int count = 0;
     	while (allWords.get(currentDifficulty - 1).size() < 1) {
     		if (currentDifficulty < MAX_DIFFICULTY) {
