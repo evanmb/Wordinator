@@ -36,8 +36,6 @@ public class Level {
 	 */
 	private ArrayList<Character> letters;
 	
-	private int attempts;
-	
 	/**
 	 * Creates a state from a given Word
 	 * 
@@ -52,8 +50,6 @@ public class Level {
 		this.difficulty 	= givenWord.getRank();
 		
 		letters = new ArrayList<Character>();
-		
-		attempts = 0;
 		
 		pickLetters();
 	}
@@ -94,6 +90,6 @@ public class Level {
 	
 	@Override
 	public String toString() {
-		return "CURRENT STAGE:\nAttempts - " + attempts + "\n" + wordData.toString();
+		return "CURRENT STAGE:\n" + wordData.toString();
 	}
 }
