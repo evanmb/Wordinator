@@ -1,11 +1,11 @@
 package wordinator;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import org.parse4j.Parse;
 import org.parse4j.ParseException;
@@ -202,6 +202,14 @@ public class Wordinator extends Application{
 		}
 		
 		if (attempt.equals(currentLevel.getWord())) {
+			//Color playerBox letters green
+			for (Node n : playerBox.getChildren()) {
+				n.setStyle("-fx-background-color: #00FF00;");
+			}
+			
+			//Should pause for a moment to display changes
+			//Thread.sleep() causes undesired behavior
+			
 			difficultyChecker++;
 			currentLevel = generateNextLevel();
 			displayLevel(currentLevel);
@@ -210,7 +218,6 @@ public class Wordinator extends Application{
 			difficultyChecker--;
 		}
 	}
-	
 	
 	/**
 	 * Displays the given level on the game scene
@@ -250,7 +257,6 @@ public class Wordinator extends Application{
     	}
 	}
 	
-	
 	/**
 	 * Populates all of the word queues
 	 */
@@ -259,7 +265,6 @@ public class Wordinator extends Application{
     		allWords.add(getWordsOfRank(i));
     	}
     }
-
     
     /**
      * Populates a single word queue
@@ -284,7 +289,6 @@ public class Wordinator extends Application{
 		
 		return words;
     }
-    
     
     /**
      * Creates the next level
