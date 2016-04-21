@@ -65,8 +65,8 @@ public class Level {
 			letters.add(c);
 		}
 
-		for (int i = 0; i < difficulty + 2; i++) {
-			letters.add((char) (r.nextInt(26) + 'a'));
+		for (int i = 0; i < difficulty + 1; i++) {
+			letters.add((char) (r.nextInt(26) + 'A'));
 		}
 		
 		Collections.shuffle(letters);

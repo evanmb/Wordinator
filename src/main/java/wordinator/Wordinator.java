@@ -70,22 +70,21 @@ public class Wordinator extends Application{
 	/**
 	 * GUI stuff
 	 */
-	private Scene startScene;
-
-	private static Scene gameScene;
-
-	private Scene endScene;
-	private static BorderPane gamePane;
-	private static VBox startBox, gameLayout;
-	private static FlowPane scrambledBox, dBox;
-	private static HBox playerBox;
-	private static Button startBtn;
-	private static Text dTxt;
-	private Stage stage;
+	private static Stage 		stage;
+	private static Scene 		startScene;
+	private static Scene 		endScene;
+	private static Scene 		gameScene;
+	private static BorderPane 	gamePane;
+	private static VBox 		startBox, gameLayout;
+	private static FlowPane 	scrambledBox, dBox;
+	private static HBox 		playerBox;
+	private static Button 		startBtn;
+	private static Text 		dTxt;
 
     public static void main(String[] args) {
     	launch(args); //launches GUI
     	
+    	/*
 		//DEBUGGING
 		System.out.println(currentLevel.toString());
 		System.out.println();
@@ -97,6 +96,7 @@ public class Wordinator extends Application{
 			
 			System.out.println();
 		}
+		*/
     }
     
     /**
@@ -172,12 +172,17 @@ public class Wordinator extends Application{
 	 * @param b
 	 */
 	private static void s2pBtnSwitch(Button b) {
-		if (playerBox.getChildren().size() < currentLevel.getWord().length()) {
-			scrambledBox.getChildren().remove(b);
-			playerBox.getChildren().add(b);
-			
-			if (playerBox.getChildren().size() == currentLevel.getWord().length()) {
-				checkAnswer();
+		for (int i = 0; i < playerBox.getChildren().size(); i++) {
+			if (((Button) playerBox.getChildren().get(i)).getText().length() < 1) {
+				playerBox.getChildren().add(i, b);
+				playerBox.getChildren().remove(i + 1);
+				scrambledBox.getChildren().remove(b);
+				
+				if (i + 1 == currentLevel.getWord().length()) {
+					checkAnswer();
+				}
+				
+				break;
 			}
 		}
 	}
@@ -187,10 +192,14 @@ public class Wordinator extends Application{
 	 * @param b
 	 */
 	private static void p2sBtnSwitch(Button b) {
+		Button blank = new Button("");
+		blank.setMinWidth(TILE_WIDTH);
+		
 		playerBox.getChildren().remove(b);
+		playerBox.getChildren().add(blank);
 		scrambledBox.getChildren().add(b);
 	}
-	
+
 	/**
 	 * Checks if the user has guessed the word
 	 */
@@ -204,15 +213,25 @@ public class Wordinator extends Application{
 		if (attempt.equals(currentLevel.getWord())) {
 			//Color playerBox letters green
 			for (Node n : playerBox.getChildren()) {
-				n.setStyle("-fx-background-color: #00FF00;");
+				n.setStyle("-fx-background-color: cyan;");
+				((Button) n).setOnAction(new EventHandler<ActionEvent>(){
+					public void handle(ActionEvent e) {
+						
+					}
+	    		});
 			}
 			
-			//Should pause for a moment to display changes
-			//Thread.sleep() causes undesired behavior
+			/*
+			 * 
+			 * MAKE "NEXT" BUTTON APPEAR HERE
+			 * 
+			 */
 			
+			//PLACE BELOW IN "NEXT" ONCLICK()
 			difficultyChecker++;
 			currentLevel = generateNextLevel();
 			displayLevel(currentLevel);
+			//PLACE ABOVE IN "NEXT" ONCLICK()
 		}
 		else {
 			difficultyChecker--;
@@ -248,13 +267,20 @@ public class Wordinator extends Application{
     		});
     		
     		scrambledBox.getChildren().add(b);
-    		
-    		dTxt = new Text(currentLevel.getDescription());
-    		dTxt.setWrappingWidth(gameScene.getWidth() - 10);
-    		
-        	dBox.getChildren().clear();
-    		dBox.getChildren().add(dTxt);
     	}
+		
+    	for (int i = 0; i < levelToDisplay.getWord().length(); i++) {
+    		Button b = new Button("");
+    		b.setMinWidth(TILE_WIDTH);
+    		
+    		playerBox.getChildren().add(b);
+    	}
+    	
+		dTxt = new Text(currentLevel.getDescription());
+		dTxt.setWrappingWidth(gameScene.getWidth() - 10);
+		
+    	dBox.getChildren().clear();
+		dBox.getChildren().add(dTxt);
 	}
 	
 	/**

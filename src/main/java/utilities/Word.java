@@ -19,13 +19,13 @@ public class Word {
 	}
 	
 	public Word(String givenWord, String givenDescription, int givenRank) {
-		this.word 			= givenWord;
+		this.word 			= givenWord.toUpperCase();
 		this.description 	= givenDescription;
 		this.rank 			= givenRank;
 	}
 	
 	public void fillFromParseObject(ParseObject po) {
-		this.word 			= po.getString("Word");
+		this.word 			= po.getString("Word").toUpperCase();
 		this.description 	= po.getString("Description");
 		this.rank 			= po.getInt("Rank");
 	}
