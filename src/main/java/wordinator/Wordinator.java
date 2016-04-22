@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 import org.parse4j.Parse;
 import org.parse4j.ParseException;
@@ -38,7 +37,7 @@ public class Wordinator extends Application{
 	/**
 	 * The maximum difficulty in the database
 	 */
-	private static final int MAX_DIFFICULTY = 3;
+	private static final int MAX_DIFFICULTY = 5;
 	
 	/**
 	 * The width of the game's letter tiles
@@ -129,7 +128,7 @@ public class Wordinator extends Application{
 		Parse.initialize(	"qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
 							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
-		currentDifficulty = MAX_DIFFICULTY / 2 + 1;
+		currentDifficulty = MAX_DIFFICULTY / 2;
 		difficultyChecker = 0;
 		
 		allWords = new ArrayList<Queue<Word>>();
@@ -337,18 +336,17 @@ public class Wordinator extends Application{
     	}
     	
     	//Make sure the current difficulty list isn't empty
-    	int count = 0;
+    	int initialDifficulty = currentDifficulty;
     	while (allWords.get(currentDifficulty - 1).size() < 1) {
-    		if (currentDifficulty < MAX_DIFFICULTY) {
-    			currentDifficulty++;
+    		currentDifficulty++;
+    		if (currentDifficulty > MAX_DIFFICULTY) {
+    			currentDifficulty = initialDifficulty - 1;
+    			break;
     		}
-    		else {
-    			currentDifficulty = 1;
-    		}
-    		
-    		count++;
-    		
-    		if (count >= MAX_DIFFICULTY * 3) {
+    	}
+    	while (allWords.get(currentDifficulty - 1).size() < 1) {
+    		currentDifficulty--;
+    		if (currentDifficulty <= 1) {
     			return new Level(new Word("Default", "NO WORDS FOUND", 0));
     		}
     	}

@@ -65,7 +65,7 @@ public class Level {
 			letters.add(c);
 		}
 
-		for (int i = 0; i < difficulty + 1; i++) {
+		for (int i = 0; i < difficulty; i++) {
 			letters.add((char) (r.nextInt(26) + 'A'));
 		}
 		
