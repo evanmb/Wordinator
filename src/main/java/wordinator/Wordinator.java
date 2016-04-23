@@ -15,13 +15,16 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utilities.Level;
@@ -69,14 +72,12 @@ public class Wordinator extends Application{
 	/**
 	 * GUI stuff
 	 */
-	private static Stage 		stage;
-	private static Scene 		startScene;
 	private static Scene 		gameScene;
 	private static BorderPane 	gamePane;
-	private static VBox 		startBox, gameLayout;
+	private static VBox 		gameLayout;
 	private static FlowPane 	scrambledBox, dBox;
 	private static HBox 		playerBox, winBox;
-	private static Button 		startBtn, nextBtn;
+	private static Button 		nextBtn;
 	private static Text 		dTxt;
 
     public static void main(String[] args) {
@@ -101,23 +102,12 @@ public class Wordinator extends Application{
      * The GUI
      */
     public void start(Stage primaryStage) {
+    	primaryStage.setTitle("Wordinator"); //sets the name of the Window
+    	
     	setUp();
-    	stage = primaryStage;
     	
-    	//Button initialization
-    	startBtn.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e){
-            	stage.setScene(gameScene);
-            	stage.show();
-            } 	
-        });
+    	setStartScene(primaryStage);
     	
-        startScene = new Scene(startBox, 400, 400);
-        
-        
-        primaryStage.setTitle("Wordinator"); //sets the name of the Window
-        primaryStage.setScene(startScene);
-        primaryStage.show();
     }
     
     /**
@@ -177,11 +167,66 @@ public class Wordinator extends Application{
     	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox);
     	gamePane.getChildren().add(gameLayout);
     	
-    	//start scene
-    	startBtn = new Button("Start Game");
-    	startBox = new VBox();
-    	startBox.getChildren().add(startBtn);
     	
+    	
+	}
+	
+	/**
+	 * Displays the instruction scene
+	 * @param stage
+	 */
+	private static void setInstructionScene(final Stage stage) {
+		Text instText = new Text("I'm instruction text!");
+		
+    	Button backBtn = new Button("Back");
+    	backBtn.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event) {
+				setStartScene(stage);
+			}
+    	});
+    	
+    	VBox instrBox = new VBox();
+    	instrBox.getChildren().addAll(instText, backBtn);
+    	
+    	Scene instrScene = new Scene(instrBox, 400, 400);
+    	stage.setScene(instrScene);
+    	stage.show();
+	}
+	
+	/**
+	 * Displays the Start Scene
+	 * @param stage
+	 */
+	private static void setStartScene(final Stage stage){
+		Text titleTxt = new Text("Wordinator");
+    	titleTxt.setFont(Font.font("Verdana", FontPosture.ITALIC, 40));
+    	
+		//Button initialization
+		Button startBtn = new Button("Start Game");
+    	startBtn.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+            	stage.setScene(gameScene);
+            	stage.show();
+            } 	
+        });
+    	
+    	Button instrBtn = new Button("Instructions");
+    	instrBtn.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent arg0) {
+				setInstructionScene(stage);
+			}
+    	});
+    	
+    	VBox startBox = new VBox();
+    	startBox.setSpacing(20);
+    	
+    	startBox.setAlignment(Pos.CENTER);
+    	startBox.getChildren().addAll(titleTxt, startBtn, instrBtn);
+    	
+        Scene startScene = new Scene(startBox, 400, 400);
+        
+        stage.setScene(startScene);
+        stage.show();
 	}
 
 	/**
