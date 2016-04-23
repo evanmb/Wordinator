@@ -172,11 +172,19 @@ public class Wordinator extends Application{
 	}
 	
 	/**
-	 * Displays the instruction scene
+	 * Initializes instruction Scene components, then displays the Scene to the given Stage.
 	 * @param stage
 	 */
 	private static void setInstructionScene(final Stage stage) {
-		Text instText = new Text("I'm instruction text!");
+		Text instText = new Text(
+			"Welcome to Wordinator, your handy-dandy spelling teacher!\n\n"
+			+ "After hitting the 'start' button, you'll be given a list of scrambled letters "
+			+ "and a word definition. Using the word's definition, try and spell out the correct word!\n\n"
+			+ "If you spell correctly, you will be moved up a difficulty level, and you will "
+			+ "have to spell more difficulty words. If you get a word incorrectly, you'll be moved "
+			+ "down a difficulty level, and the words will get easier.\n\n"
+			+ "Best of luck!"
+		);
 		
     	Button backBtn = new Button("Back");
     	backBtn.setOnAction(new EventHandler<ActionEvent>(){
@@ -186,15 +194,20 @@ public class Wordinator extends Application{
     	});
     	
     	VBox instrBox = new VBox();
+    	instrBox.setSpacing(20);
+    	instrBox.setPadding(new Insets(10));
     	instrBox.getChildren().addAll(instText, backBtn);
     	
     	Scene instrScene = new Scene(instrBox, 400, 400);
+
+    	instText.setWrappingWidth(instrScene.getWidth()-10);
+    	
     	stage.setScene(instrScene);
     	stage.show();
 	}
 	
 	/**
-	 * Displays the Start Scene
+	 * Initializes the start Scene components, then displays the Scene to the given Stage
 	 * @param stage
 	 */
 	private static void setStartScene(final Stage stage){
