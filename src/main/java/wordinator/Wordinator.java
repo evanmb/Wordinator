@@ -71,13 +71,12 @@ public class Wordinator extends Application{
 	 */
 	private static Stage 		stage;
 	private static Scene 		startScene;
-	private static Scene 		endScene;
 	private static Scene 		gameScene;
 	private static BorderPane 	gamePane;
 	private static VBox 		startBox, gameLayout;
 	private static FlowPane 	scrambledBox, dBox;
-	private static HBox 		playerBox;
-	private static Button 		startBtn;
+	private static HBox 		playerBox, winBox;
+	private static Button 		startBtn, nextBtn;
 	private static Text 		dTxt;
 
     public static void main(String[] args) {
@@ -149,6 +148,25 @@ public class Wordinator extends Application{
     	playerBox = new HBox();
     	playerBox.setPadding(new Insets(10));
     	
+    	
+    	nextBtn = new Button("Next");
+		nextBtn.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent arg0) {
+				difficultyChecker++;
+				currentLevel = generateNextLevel();
+				displayLevel(currentLevel);
+				winBox.setVisible(false);
+			}
+		});
+		nextBtn.setMinWidth(100);
+		
+		Text winText = new Text(" Good job!");
+		
+		winBox = new HBox();
+		winBox.setPadding(new Insets(10));
+		winBox.getChildren().addAll(nextBtn, winText);
+		winBox.setVisible(false);
+    	
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
     	
@@ -156,7 +174,7 @@ public class Wordinator extends Application{
     	
     	displayLevel(currentLevel);
     	
-    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox);
+    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox);
     	gamePane.getChildren().add(gameLayout);
     	
     	//start scene
@@ -212,7 +230,7 @@ public class Wordinator extends Application{
 		if (attempt.equals(currentLevel.getWord())) {
 			//Color playerBox letters green
 			for (Node n : playerBox.getChildren()) {
-				n.setStyle("-fx-background-color: cyan;");
+				n.setStyle("-fx-background-color: lime;");
 				((Button) n).setOnAction(new EventHandler<ActionEvent>(){
 					public void handle(ActionEvent e) {
 						
@@ -220,17 +238,9 @@ public class Wordinator extends Application{
 	    		});
 			}
 			
-			/*
-			 * 
-			 * MAKE "NEXT" BUTTON APPEAR HERE
-			 * 
-			 */
+			//Next button appears
+			winBox.setVisible(true);
 			
-			//PLACE BELOW IN "NEXT" ONCLICK()
-			difficultyChecker++;
-			currentLevel = generateNextLevel();
-			displayLevel(currentLevel);
-			//PLACE ABOVE IN "NEXT" ONCLICK()
 		}
 		else {
 			difficultyChecker--;
