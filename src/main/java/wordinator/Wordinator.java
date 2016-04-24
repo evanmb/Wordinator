@@ -181,7 +181,7 @@ public class Wordinator extends Application{
 			+ "After hitting the 'start' button, you'll be given a list of scrambled letters "
 			+ "and a word definition. Using the word's definition, try and spell out the correct word!\n\n"
 			+ "If you spell correctly, you will be moved up a difficulty level, and you will "
-			+ "have to spell more difficulty words. If you get a word incorrectly, you'll be moved "
+			+ "have to spell more difficult words. If you guess a word incorrectly, you'll be moved "
 			+ "down a difficulty level, and the words will get easier.\n\n"
 			+ "Best of luck!"
 		);
