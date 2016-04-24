@@ -47,6 +47,9 @@ public class Wordinator extends Application{
 	 */
 	private static final double TILE_WIDTH = 40;
 	
+	private static final int WINDOW_X = 550;
+	private static final int WINDOW_Y = 550;
+	
 	/**
 	 * The current difficulty that the user is playing.
 	 */
@@ -190,12 +193,13 @@ public class Wordinator extends Application{
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
     	
-    	gameScene = new Scene(gamePane, 450, 450);
+    	gameScene = new Scene(gamePane, WINDOW_X, WINDOW_Y);
     	
     	displayLevel(currentLevel);
     	
-    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox, optBox);
-    	gamePane.getChildren().add(gameLayout);
+    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox);
+    	gamePane.setCenter(gameLayout);
+    	gamePane.setBottom(optBox);
 	}
 	
 	/**
@@ -225,7 +229,7 @@ public class Wordinator extends Application{
     	instrBox.setPadding(new Insets(10));
     	instrBox.getChildren().addAll(instText, backBtn);
     	
-    	Scene instrScene = new Scene(instrBox, 400, 400);
+    	Scene instrScene = new Scene(instrBox, WINDOW_X, WINDOW_Y);
 
     	instText.setWrappingWidth(instrScene.getWidth()-10);
     	
@@ -263,7 +267,7 @@ public class Wordinator extends Application{
     	startBox.setAlignment(Pos.CENTER);
     	startBox.getChildren().addAll(titleTxt, startBtn, instrBtn);
     	
-        Scene startScene = new Scene(startBox, 400, 400);
+        Scene startScene = new Scene(startBox, WINDOW_X, WINDOW_Y);
         
         stage.setScene(startScene);
         stage.show();
