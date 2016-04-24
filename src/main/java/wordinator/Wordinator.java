@@ -177,6 +177,7 @@ public class Wordinator extends Application{
 		skipBtn.setMinWidth(100);
 		skipBtn.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event) {
+				difficultyChecker--;
 				currentLevel = generateNextLevel();
 				displayLevel(currentLevel);
 			}
@@ -195,9 +196,6 @@ public class Wordinator extends Application{
     	
     	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox, optBox);
     	gamePane.getChildren().add(gameLayout);
-    	
-    	
-    	
 	}
 	
 	/**
@@ -432,22 +430,9 @@ public class Wordinator extends Application{
     		}
     	}
     	
-    	//Make sure the current difficulty list isn't empty
-    	int initialDifficulty = currentDifficulty;
-    	while (allWords.get(currentDifficulty - 1).size() < 1) {
-    		currentDifficulty++;
-    		if (currentDifficulty > MAX_DIFFICULTY) {
-    			currentDifficulty = initialDifficulty - 1;
-    			break;
-    		}
-    	}
-    	while (allWords.get(currentDifficulty - 1).size() < 1) {
-    		currentDifficulty--;
-    		if (currentDifficulty <= 1) {
-    			return new Level(new Word("Default", "NO WORDS FOUND", 0));
-    		}
-    	}
+    	Word nextWord = allWords.get(currentDifficulty - 1).poll();
+    	allWords.get(currentDifficulty - 1).add(nextWord);
     	
-    	return new Level(allWords.get(currentDifficulty - 1).poll());
+    	return new Level(nextWord);
     }
 }
