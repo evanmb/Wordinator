@@ -104,7 +104,7 @@ public class Wordinator extends Application{
     public void start(Stage primaryStage) {
     	primaryStage.setTitle("Wordinator"); //sets the name of the Window
     	
-    	setUp();
+    	setUp(primaryStage);
     	
     	setStartScene(primaryStage);
     	
@@ -113,7 +113,7 @@ public class Wordinator extends Application{
     /**
      * Initializes the game
      */
-	private static void setUp() {
+	private static void setUp(final Stage stage) {
 		Parse.initialize(	"qUQ4H5VsD1t1fmQvJTZIvM76bPrEgNVR5sWAn9Vy",
 							"juVtcRqhhYCjVqFDngDM0KoQYxj1EpEAIPmFuOvA");
 		
@@ -128,17 +128,21 @@ public class Wordinator extends Application{
 		
 		//GUI
 		//Game Scene
+		
+		//this box contains the scrambled letters
 		scrambledBox = new FlowPane();
 		scrambledBox.setPadding(new Insets(10));
 		scrambledBox.setMinWidth(TILE_WIDTH * 10);
 		
+		//this box displays the description
     	dBox = new FlowPane(); 
     	dBox.setPadding(new Insets(10));
     	
+    	//this box contains the blank spaces for the letters
     	playerBox = new HBox();
     	playerBox.setPadding(new Insets(10));
     	
-    	
+    	//the next button that appears to go to the next level
     	nextBtn = new Button("Next");
 		nextBtn.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent arg0) {
@@ -152,10 +156,35 @@ public class Wordinator extends Application{
 		
 		Text winText = new Text(" Good job!");
 		
+		//only appears when a word is spelled correctly
 		winBox = new HBox();
 		winBox.setPadding(new Insets(10));
 		winBox.getChildren().addAll(nextBtn, winText);
 		winBox.setVisible(false);
+		
+		//Box that contains options (quit and skip)
+		HBox optBox = new HBox();
+		
+		Button quitBtn = new Button("Quit Game");
+		quitBtn.setMinWidth(100);
+		quitBtn.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent arg0) {
+				setStartScene(stage);
+			}
+		});
+		
+		Button skipBtn = new Button("Skip Word");
+		skipBtn.setMinWidth(100);
+		skipBtn.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event) {
+				currentLevel = generateNextLevel();
+				displayLevel(currentLevel);
+			}
+			
+		});
+		
+		optBox.getChildren().addAll(quitBtn, skipBtn);
+		optBox.setPadding(new Insets(10));
     	
     	gameLayout = new VBox();
     	gamePane = new BorderPane();
@@ -164,7 +193,7 @@ public class Wordinator extends Application{
     	
     	displayLevel(currentLevel);
     	
-    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox);
+    	gameLayout.getChildren().addAll(scrambledBox, dBox, playerBox, winBox, optBox);
     	gamePane.getChildren().add(gameLayout);
     	
     	
